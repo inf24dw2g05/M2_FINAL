@@ -1,0 +1,12 @@
+FROM mysql:5.7
+
+
+ENV MYSQL_ROOT_PASSWORD=1234DW2.2ano
+ENV MYSQL_DATABASE=task_manager
+
+
+COPY ./database/ddl.sql /docker-entrypoint-initdb.d/1-schema.sql
+COPY ./database/dml.sql /docker-entrypoint-initdb.d/2-data.sql
+
+
+EXPOSE 3306

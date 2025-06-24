@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Backend (Node.js/Express)
+  app:
+    image: inf24dw1g10/task-manager-node:v1.0
+    container_name: task-manager-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy  
+    environment:
+      - PORT=3000
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=task_manager
+      - DB_USER=root
+      - DB_PASSWORD=1234DW2.2ano
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CALLBACK_URL=http://localhost/api/auth/google/callback
+      - SESSION_SECRET=${SESSION_SECRET}
+    networks:
+      - task-manager-network
+
+  # Frontend (React + Nginx)
+  frontend:
+    image: inf24dw1g10/task-manager-frontend:v1.0  # ← Agora usando a imagem da organização
+    container_name: task-manager-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - task-manager-network
+
+  # Database (MySQL)
+  db:
+    image: inf24dw1g10/task-manager-mysql:v1.0
+    container_name: task-manager-db
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p1234DW2.2ano"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    restart: always
+    networks:
+      - task-manager-network
+
+volumes:
+  mysql_data:
+
+networks:
+  task-manager-network:
+    driver: bridge

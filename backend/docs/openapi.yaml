@@ -1,0 +1,851 @@
+openapi: 3.0.0
+info:
+  title: Task Management API
+  description: API for managing tasks and projects with Google OAuth2 authentication
+  contact:
+    name: API Support
+    email: support@example.com
+  version: 1.0.0
+servers:
+- url: http://localhost:3000/api
+  description: Development server
+security:
+- OAuth2:
+  - profile
+  - email
+paths:
+  /users/me:
+    get:
+      tags:
+      - Users
+      summary: Get current user profile
+      description: Returns the authenticated user's profile information
+      operationId: getCurrentUser
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Users
+    put:
+      tags:
+      - Users
+      summary: Update current user profile
+      description: Updates the authenticated user's profile information
+      operationId: updateCurrentUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/users_me_body"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Users
+  /categories:
+    get:
+      tags:
+      - Categories
+      summary: List user categories
+      description: Returns all categories belonging to the authenticated user
+      operationId: listCategories
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+                x-content-type: application/json
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Categories
+    post:
+      tags:
+      - Categories
+      summary: Create a new category
+      description: Creates a new category for the authenticated user
+      operationId: createCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/categories_body"
+        required: true
+      responses:
+        "201":
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Categories
+  /categories/{categoryId}:
+    get:
+      tags:
+      - Categories
+      summary: Get category details
+      description: Returns a specific category by ID
+      operationId: getCategory
+      parameters:
+      - name: categoryId
+        in: path
+        description: Category ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Categories
+    put:
+      tags:
+      - Categories
+      summary: Update category
+      description: Updates a specific category
+      operationId: updateCategory
+      parameters:
+      - name: categoryId
+        in: path
+        description: Category ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/categories_categoryId_body"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Categories
+    delete:
+      tags:
+      - Categories
+      summary: Delete category
+      description: Deletes a specific category
+      operationId: deleteCategory
+      parameters:
+      - name: categoryId
+        in: path
+        description: Category ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Category deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Categories
+  /projects:
+    get:
+      tags:
+      - Projects
+      summary: List user projects
+      description: Returns all projects belonging to the authenticated user
+      operationId: listProjects
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+                x-content-type: application/json
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Projects
+    post:
+      tags:
+      - Projects
+      summary: Create a new project
+      description: Creates a new project for the authenticated user
+      operationId: createProject
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/projects_body"
+        required: true
+      responses:
+        "201":
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Projects
+  /projects/{projectId}:
+    get:
+      tags:
+      - Projects
+      summary: Get project details
+      description: Returns a specific project by ID
+      operationId: getProject
+      parameters:
+      - name: projectId
+        in: path
+        description: Project ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Projects
+    put:
+      tags:
+      - Projects
+      summary: Update project
+      description: Updates a specific project
+      operationId: updateProject
+      parameters:
+      - name: projectId
+        in: path
+        description: Project ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/projects_projectId_body"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Projects
+    delete:
+      tags:
+      - Projects
+      summary: Delete project
+      description: Deletes a specific project
+      operationId: deleteProject
+      parameters:
+      - name: projectId
+        in: path
+        description: Project ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Project deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Projects
+  /projects/{projectId}/tasks:
+    get:
+      tags:
+      - Tasks
+      summary: List project tasks
+      description: Returns all tasks for a specific project
+      operationId: listProjectTasks
+      parameters:
+      - name: projectId
+        in: path
+        description: Project ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+                x-content-type: application/json
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Tasks
+    post:
+      tags:
+      - Tasks
+      summary: Create a new task
+      description: Creates a new task in a project
+      operationId: createTask
+      parameters:
+      - name: projectId
+        in: path
+        description: Project ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/projectId_tasks_body"
+        required: true
+      responses:
+        "201":
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Project not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Tasks
+  /tasks/{taskId}:
+    get:
+      tags:
+      - Tasks
+      summary: Get task details
+      description: Returns a specific task by ID
+      operationId: getTask
+      parameters:
+      - name: taskId
+        in: path
+        description: Task ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Tasks
+    put:
+      tags:
+      - Tasks
+      summary: Update task
+      description: Updates a specific task
+      operationId: updateTask
+      parameters:
+      - name: taskId
+        in: path
+        description: Task ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/tasks_taskId_body"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Tasks
+    delete:
+      tags:
+      - Tasks
+      summary: Delete task
+      description: Deletes a specific task
+      operationId: deleteTask
+      parameters:
+      - name: taskId
+        in: path
+        description: Task ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: Task deleted
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      x-swagger-router-controller: Tasks
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: User unique identifier
+        googleId:
+          type: string
+          description: Google OAuth ID
+        email:
+          type: string
+          description: User email address
+          format: email
+        name:
+          type: string
+          description: User full name
+        avatar:
+          type: string
+          description: User avatar URL
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        googleId: googleId
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        name: name
+        id: 0
+        avatar: avatar
+        email: ""
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+    Category:
+      required:
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Category unique identifier
+        name:
+          type: string
+          description: Category name
+        color:
+          pattern: "^#[0-9A-Fa-f]{6}$"
+          type: string
+          description: Category color (hex format)
+        description:
+          type: string
+          description: Category description
+        userId:
+          type: integer
+          description: Owner user ID
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        color: color
+        name: name
+        description: description
+        id: 0
+        userId: 6
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+    Project:
+      required:
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Project unique identifier
+        name:
+          type: string
+          description: Project name
+        description:
+          type: string
+          description: Project description
+        categoryId:
+          type: integer
+          description: Category ID (optional)
+        userId:
+          type: integer
+          description: Owner user ID
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        name: name
+        description: description
+        id: 0
+        userId: 1
+        categoryId: 6
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+    Task:
+      required:
+      - projectId
+      - title
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Task unique identifier
+        title:
+          type: string
+          description: Task title
+        description:
+          type: string
+          description: Task description
+        status:
+          type: string
+          default: pending
+          enum:
+          - pending
+          - in_progress
+          - completed
+        priority:
+          type: string
+          default: medium
+          enum:
+          - low
+          - medium
+          - high
+        dueDate:
+          type: string
+          format: date-time
+        projectId:
+          type: integer
+          description: Parent project ID
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      example:
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        dueDate: 2000-01-23T04:56:07.000+00:00
+        description: description
+        id: 0
+        title: title
+        priority: medium
+        projectId: 6
+        status: pending
+        updatedAt: 2000-01-23T04:56:07.000+00:00
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+    users_me_body:
+      type: object
+      properties:
+        name:
+          type: string
+        avatar:
+          type: string
+    categories_body:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        color:
+          pattern: "^#[0-9A-Fa-f]{6}$"
+          type: string
+        description:
+          type: string
+    categories_categoryId_body:
+      type: object
+      properties:
+        name:
+          type: string
+        color:
+          pattern: "^#[0-9A-Fa-f]{6}$"
+          type: string
+        description:
+          type: string
+    projects_body:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        categoryId:
+          type: integer
+    projects_projectId_body:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        categoryId:
+          type: integer
+    projectId_tasks_body:
+      required:
+      - title
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - in_progress
+          - completed
+        priority:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+        dueDate:
+          type: string
+          format: date-time
+    tasks_taskId_body:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum:
+          - pending
+          - in_progress
+          - completed
+        priority:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+        dueDate:
+          type: string
+          format: date-time
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://accounts.google.com/o/oauth2/auth
+          tokenUrl: https://oauth2.googleapis.com/token
+          scopes:
+            profile: Access user profile
+            email: Access user email
