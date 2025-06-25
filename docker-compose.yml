@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # Backend (Node.js/Express)
   app:
-    image: inf24dw1g10/task-manager-node:v1.0
+    image: inf24dw2g05/task-manager-node:v1.0
     container_name: task-manager-backend
     ports:
       - "3000:3000"
@@ -26,7 +26,7 @@ services:
 
   # Frontend (React + Nginx)
   frontend:
-    image: inf24dw1g10/task-manager-frontend:v1.0  # ← Agora usando a imagem da organização
+    image: inf24dw2g05/task-manager-frontend:v1.0  # ← Agora usando a imagem da organização
     container_name: task-manager-frontend
     ports:
       - "80:80"
@@ -37,7 +37,7 @@ services:
 
   # Database (MySQL)
   db:
-    image: inf24dw1g10/task-manager-mysql:v1.0
+    image: inf24dw2g05/task-manager-mysql:v1.0
     container_name: task-manager-db
     ports:
       - "3307:3306"
